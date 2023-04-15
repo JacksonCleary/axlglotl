@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState } from "react";
 
 export interface ApplicationSettings {
-  FBDB?: string;
+  fbdb?: string;
 }
 
 let _applicationSettings: ApplicationSettings = {
-  FBDB: "",
+  fbdb: "",
 };
 
 const Context = createContext<ApplicationSettings>(_applicationSettings);
