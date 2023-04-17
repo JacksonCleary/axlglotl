@@ -2,6 +2,7 @@ import React, { type ChangeEvent, useState, useEffect } from "react";
 import { api } from "~/utils/api";
 import { useApplicationSettings } from "~/providers";
 import { User } from "~/models";
+import { Chat } from "../chat";
 
 export const Room: React.FC = () => {
   const applicationSettings = useApplicationSettings();
@@ -54,17 +55,10 @@ export const Room: React.FC = () => {
   }, [isSuccess]);
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input type="text" onChange={onChangeHandler} value={inputVal} />
-        <button type="submit">Submit</button>
-      </form>
-      {chatLog?.data &&
-        chatLog.data.map((message) => (
-          <div key={`chat-message-${message.messageID}`}>
-            {message.untranslatedMessage}
-          </div>
-        ))}
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#082f49] to-[#0f172a]">
+      <div className="container flex w-5/6 flex-col items-center justify-center border border-sky-500 p-4 ">
+        <Chat />
+      </div>
+    </main>
   );
 };
