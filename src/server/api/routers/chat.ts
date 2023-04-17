@@ -1,15 +1,24 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { z } from "zod";
-const chatLog: string[] = ["test"];
+import { chatLog } from "../root";
+import { handleAddChatInput } from "../handlers";
 
 export const chatRouter = createTRPCRouter({
   getChatlog: publicProcedure.query(() => {
-    return chatLog;
+    return chatLog.data;
   }),
   addChatInput: publicProcedure
-    .input(z.object({ text: z.string() }))
+    .input(
+      z.object({
+        text: z.string(),
+        user: z.object({
+          id: z.string(),
+          username: z.string(),
+        }),
+      })
+    )
     .mutation(({ input }) => {
-      const { text } = input;
-      chatLog.push(text);
+      const { text, user } = input;
+      handleAddChatInput(text, user);
     }),
 });

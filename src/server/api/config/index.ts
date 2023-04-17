@@ -1,4 +1,4 @@
-import { SettingsConstants } from "~/server/models";
+import { type SettingsConstants } from "~/models";
 
 export const getSettingsConstants = (): SettingsConstants => {
   return {
