@@ -19,7 +19,7 @@ export const Message: React.FC<MessageProps> = ({ message, isYou = false }) => {
     <div className={`${alignmentClasses} flex w-full items-end`}>
       <User user={message.user} showAvatar={!isYou} />
       <p
-        className={`text-1xl rounded-l  px-2 py-1 text-[#f0f9ff] ${colorClasses}`}
+        className={`text-1xl rounded-l  px-2 py-1 text-sky-50 ${colorClasses}`}
       >
         {message.translatedMessage}
       </p>

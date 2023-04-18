@@ -26,7 +26,7 @@ export const User: React.FC<UserProps> = ({
           }}
         ></div>
       )}
-      {showName && <p className="text-1xl text-[#f0f9ff]">{userName}</p>}
+      {showName && <p className="text-1xl text-sky-50">{userName}</p>}
     </div>
   );
 };

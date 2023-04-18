@@ -17,7 +17,7 @@ export const UIButtonLink: React.FC<UIButtonLinkProps> = ({
 }) => {
   return (
     <Link
-      className="transtion-colors flex max-w-xs cursor-pointer flex-row justify-center gap-1 rounded-xl bg-white/10 p-4 align-middle text-[#f0f9ff] transition ease-in-out hover:bg-white/20"
+      className="transtion-colors flex max-w-xs cursor-pointer flex-row justify-center gap-1 rounded border-b-2 border-sky-50 bg-sky-900 px-4 py-2 font-bold text-sky-50 transition ease-in-out hover:border-sky-50 hover:bg-sky-700"
       href={href}
       title={title}
       target="_blank"

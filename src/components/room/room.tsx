@@ -55,7 +55,7 @@ export const Room: React.FC = () => {
   }, [isSuccess]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#082f49] to-[#0f172a]">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-950 to-slate-900">
       <div className="container flex w-5/6 flex-col items-center justify-center border border-sky-500 p-4 ">
         <Chat />
       </div>

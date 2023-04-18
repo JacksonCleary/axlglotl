@@ -21,7 +21,7 @@ export const UILink: React.FC<UILinkProps> = ({
 
   return (
     <Link
-      className={`flex align-middle transition ${alignmentClass} transtion-colors cursor-pointer gap-1 text-[#38bdf8] ease-in-out hover:text-[#f0f9ff] focus:text-[#f0f9ff] active:text-[#f0f9ff] `}
+      className={`flex align-middle transition ${alignmentClass} transtion-colors cursor-pointer gap-1 text-[#38bdf8] ease-in-out hover:text-sky-50 focus:text-sky-50 active:text-sky-50 `}
       href={href}
       title={title}
       target="_blank"
