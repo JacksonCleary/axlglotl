@@ -3,7 +3,7 @@ import React from "react";
 interface UIButtonProps {
   children: React.ReactElement;
   title: string;
-  action: () => void;
+  action: () => Promise<void>;
   disabled?: boolean;
 }
 
@@ -21,7 +21,7 @@ export const UIButton: React.FC<UIButtonProps> = ({
     <button
       className={`${disabledClass} transtion-colors text-1xl flex max-w-xs cursor-pointer flex-row justify-center gap-1 rounded border-b-2 border-sky-50 bg-sky-900 px-4 py-2 text-center font-bold text-sky-50 transition ease-in-out hover:border-sky-50 hover:bg-sky-700`}
       title={title}
-      onChange={action}
+      onClick={() => void action()}
       disabled={disabled}
     >
       {children}

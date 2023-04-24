@@ -13,7 +13,7 @@ export function createMessage(
     throwError(ERROR_TYPES.EMPTY_STRING);
   }
 
-  const timestamp = new Date();
+  const timestamp = Date.now();
   const messageID = uuidv4();
 
   return {

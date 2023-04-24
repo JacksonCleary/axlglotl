@@ -1,7 +1,7 @@
 import { type Avatar, type User } from "~/models";
 
 // get an avatar background ID that isn't taken by another user
-export const getRandomUntakenAvatarBGId = (users: User[]): string => {
+export const getRandomUntakenAvatarBGId = (users: User[]): Avatar => {
   const currentAvatarIds = users.map((user) => user.avatarID);
   const avatarIdsPool: Avatar[] = [
     "hexagons",
@@ -25,7 +25,12 @@ export const getRandomUntakenAvatarBGId = (users: User[]): string => {
     filteredOutCurrentIds[
       Math.floor(Math.random() * filteredOutCurrentIds.length)
     ];
-  return randomFilteredId || "";
+
+  if (!randomFilteredId) {
+    const defaultAvatar = avatarIdsPool[0] as Avatar;
+    return defaultAvatar;
+  }
+  return randomFilteredId;
 };
 
 // get avatar background

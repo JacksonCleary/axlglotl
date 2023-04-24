@@ -1,11 +1,10 @@
-import React, { type Dispatch, type SetStateAction } from "react";
+import React, { type Dispatch, type SetStateAction, useEffect } from "react";
 
 interface InputProps {
   setText: Dispatch<SetStateAction<string>>;
-  value: string;
 }
 
-export const Input: React.FC<InputProps> = ({ setText, value }) => {
+export const Input: React.FC<InputProps> = ({ setText }) => {
   return (
     <div className="flex w-full items-center justify-center">
       <textarea
