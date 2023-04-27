@@ -1,19 +1,19 @@
-import { type User } from "./user";
+import { type UserID } from "./user";
 
 export interface IncomingUntranslatedMessage {
   messageID: string;
   timestamp: number;
   untranslatedMessage: string;
-  user: User;
+  userId: UserID;
 }
 
 export interface OutgoingTranslatedMessage extends IncomingUntranslatedMessage {
-  translatedMessage?: string;
-  translatedTimestamp?: number;
+  translatedMessage: string;
+  translatedTimestamp: number;
 }
 
 export interface ReceivedMessage extends OutgoingTranslatedMessage {
-  timeReceived?: number;
+  timeReceived: number;
 }
 
 export interface ChatLog {

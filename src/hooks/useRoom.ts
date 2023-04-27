@@ -1,10 +1,13 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { type BaseRoomConfig } from "trystero";
 import { type FirebaseRoomConfig } from "trystero/firebase";
 import { v4 as uuid } from "uuid";
 import { getRandomUntakenAvatarBGId } from "~/utils";
-import { ShellContext } from "~/providers";
-import { getApplicationSettings, useShellContext } from "~/providers";
+import {
+  useApplicationSettings,
+  useShellContext,
+  useUserPreferences,
+} from "~/providers";
 import {
   type ReceivedMessage,
   type IncomingUntranslatedMessage,
@@ -50,11 +53,11 @@ export function useRoom(
     customUsername,
   } = useShellContext();
 
-  const settingsContext = getApplicationSettings();
+  const userPreferences = useUserPreferences();
+  const settingsContext = useApplicationSettings();
   const [isMessageSending, setIsMessageSending] = useState(false);
   const [messageLog, _setMessageLog] = useState<Array<ReceivedMessage>>([]);
   const [newMessageAudio] = useState(() => new AudioService());
-
   const { getDisplayUsername } = usePeerNameDisplay();
 
   const messageTranscriptSizeLimit = settingsContext.messageTranscriptSizeLimit;
@@ -145,18 +148,12 @@ export function useRoom(
     console.log("sending message");
     console.log("isMessageSending", isMessageSending);
     if (isMessageSending) return;
-    const peerIndex = peerList.findIndex((peer) => peer.id === userId);
-    const user = peerList[peerIndex];
-    console.log("userId", userId);
-    console.log("peerList", peerList);
-    console.log("user", user);
-    if (!user) return;
+
     const unsentMessage: IncomingUntranslatedMessage = {
       untranslatedMessage: message,
       timestamp: Date.now(),
       messageID: getUuid(),
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      user: peerList[peerIndex]!,
+      userId,
     };
 
     setIsMessageSending(true);
@@ -179,6 +176,7 @@ export function useRoom(
     console.log("peerId", peerId);
     const peerIndex = peerList.findIndex((peer) => peer.id === peerId);
     console.log("peerIndex", peerIndex);
+
     if (peerIndex === -1) {
       console.log("ADD PEER TO PEERLIST");
       setPeerList([
@@ -215,7 +213,7 @@ export function useRoom(
   });
 
   receivePeerMessage((message) => {
-    const userSettings = settingsContext.getUserSettings();
+    const userSettings = userPreferences.getUserSettings();
 
     if (!isShowingMessages) {
       setUnreadMessages(unreadMessages + 1);

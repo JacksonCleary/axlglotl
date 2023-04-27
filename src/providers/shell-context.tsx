@@ -4,7 +4,6 @@ import {
   type Dispatch,
   type SetStateAction,
   useContext,
-  useState,
 } from "react";
 
 import { type AlertOptions, type User } from "~/models";
@@ -55,7 +54,7 @@ export const useShellContext = (): ShellContextProps => {
 };
 
 export interface ShellContextProviderProps {
-  defaultStateOverride?: ShellContextProps;
+  defaultStateOverride: ShellContextProps;
   children?: React.ReactElement;
 }
 
@@ -63,10 +62,11 @@ export const ShellContextProvider: React.FC<ShellContextProviderProps> = ({
   defaultStateOverride,
   children,
 }) => {
-  const _shellSettings = defaultStateOverride ?? _shellContext;
-  const [state] = useState(_shellSettings);
+  const _shellSettings = { ..._shellContext, ...defaultStateOverride };
 
   return (
-    <ShellContext.Provider value={state}>{children}</ShellContext.Provider>
+    <ShellContext.Provider value={_shellSettings}>
+      {children}
+    </ShellContext.Provider>
   );
 };

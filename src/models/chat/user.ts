@@ -3,8 +3,8 @@ export type CustomUserName = string;
 export type UserID = string;
 export type User = {
   id: UserID;
-  avatarID?: Avatar | undefined;
-  customUsername?: CustomUserName;
+  avatarID: Avatar;
+  customUsername: CustomUserName;
 };
 
 export type Avatar =
@@ -20,7 +20,8 @@ export type Avatar =
   | "morphing-diamonds"
   | "zig-zag"
   | "endless-clouds"
-  | "overlapping-diamonds";
+  | "overlapping-diamonds"
+  | "unknown";
 
 export interface UserSettings {
   colorMode: "dark" | "light";
@@ -28,4 +29,5 @@ export interface UserSettings {
   customUsername: string;
   playSoundOnNewMessage: boolean;
   showNotificationOnNewMessage: boolean;
+  avatarID: Avatar;
 }

@@ -1,10 +1,8 @@
-import React, { type Dispatch, type SetStateAction, useEffect } from "react";
+import React from "react";
+import { useMessagingContext } from "~/providers";
 
-interface InputProps {
-  setText: Dispatch<SetStateAction<string>>;
-}
-
-export const Input: React.FC<InputProps> = ({ setText }) => {
+export const Input: React.FC = () => {
+  const { setText } = useMessagingContext();
   return (
     <div className="flex w-full items-center justify-center">
       <textarea

@@ -1,20 +1,21 @@
 import React from "react";
-import { type User as UserModel } from "~/models";
+import { type UserID, type Avatar, type CustomUserName } from "~/models";
 import { getAvatarBGFromId } from "~/utils";
 
 interface UserProps {
-  user: UserModel;
+  username: UserID | CustomUserName;
+  avatarID: Avatar;
   showName?: boolean;
   showAvatar?: boolean;
 }
 
 export const User: React.FC<UserProps> = ({
-  user,
+  username,
+  avatarID,
   showName = false,
   showAvatar = true,
 }) => {
-  const bgURL = showAvatar ? getAvatarBGFromId(user.avatarID) : "";
-  const userName = user.customUsername || user.username;
+  const bgURL = showAvatar ? getAvatarBGFromId(avatarID) : "";
   return (
     <div className="flex items-center justify-center gap-3">
       {showAvatar && (
@@ -26,7 +27,7 @@ export const User: React.FC<UserProps> = ({
           }}
         ></div>
       )}
-      {showName && <p className="text-1xl text-sky-50">{userName}</p>}
+      {showName && <p className="text-1xl text-sky-50">{username}</p>}
     </div>
   );
 };

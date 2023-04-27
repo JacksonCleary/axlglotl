@@ -1,7 +1,7 @@
-import { getApplicationSettings, useShellContext } from "~/providers";
+import { useShellContext, useUserPreferences } from "~/providers";
 
 export const usePeerNameDisplay = () => {
-  const { getUserSettings } = getApplicationSettings();
+  const { getUserSettings } = useUserPreferences();
   const { peerList, customUsername: selfCustomUsername } = useShellContext();
 
   const { userId: selfUserId } = getUserSettings();

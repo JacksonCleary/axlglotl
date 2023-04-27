@@ -1,13 +1,9 @@
-import React, { createContext, useContext, useState } from "react";
-import { type UserSettings } from "~/models";
+import React, { createContext, useContext } from "react";
 import { getSettingsConstants } from "~/server/api/config";
-import { v4 as uuid } from "uuid";
 export interface ApplicationSettings {
   fbdb?: string;
   messageTranscriptSizeLimit: number;
   messageCharacterSizeLimit: number;
-  updateUserSettings: (settings: Partial<UserSettings>) => Promise<void>;
-  getUserSettings: () => UserSettings;
 }
 
 const { messageTranscriptSizeLimit, messageCharacterSizeLimit } =
@@ -16,14 +12,6 @@ const { messageTranscriptSizeLimit, messageCharacterSizeLimit } =
 export let _applicationSettings: ApplicationSettings = {
   messageTranscriptSizeLimit: messageTranscriptSizeLimit,
   messageCharacterSizeLimit: messageCharacterSizeLimit,
-  updateUserSettings: () => Promise.resolve(),
-  getUserSettings: () => ({
-    userId: uuid(),
-    customUsername: "",
-    colorMode: "dark",
-    playSoundOnNewMessage: true,
-    showNotificationOnNewMessage: true,
-  }),
 };
 
 const Context = createContext<ApplicationSettings>(_applicationSettings);
@@ -51,9 +39,10 @@ export const ApplicationSettingsProvider: React.FC<
   ApplicationSettingsProviderProps
 > = ({ defaultStateOverride, children }) => {
   _applicationSettings = defaultStateOverride;
-  const [state] = useState(_applicationSettings);
 
-  return <Context.Provider value={state}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={_applicationSettings}>{children}</Context.Provider>
+  );
 };
 
 export const ApplicationSettingsContext = Context;

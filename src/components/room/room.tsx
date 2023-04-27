@@ -1,22 +1,32 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useApplicationSettings } from "~/providers";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import {
+  useApplicationSettings,
+  UserPreferencesProvider,
+  ShellContextProvider,
+  type ShellContextProps,
+} from "~/providers";
 import Chat from "../chat/chat";
-import { ShellContextProvider } from "~/providers";
-import { useShellContext, type ShellContextProps } from "~/providers";
+
 import { type AlertOptions, type User } from "~/models";
 import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
-
-// const DynamicChat = dynamic(() => import("~/components/chat/chat"), {
-//   ssr: false,
-// });
+import { type UserSettings } from "~/models";
+import { getRandomUntakenAvatarBGId } from "~/utils";
+import { v4 as uuid } from "uuid";
+export interface UserPreferences {
+  updateUserSettings: Dispatch<SetStateAction<UserSettings>>;
+  getUserSettings: () => UserSettings;
+}
 
 const Room: React.FC = () => {
   const applicationSettings = useApplicationSettings();
   const router = useRouter();
   const { query } = router;
-
-  console.log(applicationSettings);
 
   // TODO
   const defaultSidebarsOpen = false;
@@ -85,27 +95,50 @@ const Room: React.FC = () => {
     ]
   );
 
+  // user settings
+  // get random untaken avatarBG that can be changed later
+  const randomAvatarBG = getRandomUntakenAvatarBGId(peerList);
+  const [user, setUser] = useState<UserSettings>({
+    userId: uuid(),
+    customUsername: "",
+    colorMode: "dark",
+    playSoundOnNewMessage: true,
+    showNotificationOnNewMessage: true,
+    avatarID: randomAvatarBG,
+  });
+
+  const userPreferences: UserPreferences = useMemo(
+    () => ({
+      updateUserSettings: setUser,
+      getUserSettings: () => user,
+    }),
+    [user, setUser]
+  );
+
   // bail if we can't establish room TODO
-  if (!roomId || !applicationSettings || !applicationSettings.fbdb) {
+  if (
+    !roomId ||
+    !applicationSettings?.fbdb ||
+    !userPreferences?.getUserSettings
+  ) {
     return null;
   }
 
-  const { userId } = applicationSettings.getUserSettings();
+  const { userId } = userPreferences.getUserSettings();
   console.log("userId", userId);
   return (
     <ShellContextProvider defaultStateOverride={shellContextValue}>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-950 to-slate-900">
-        <div className="container flex w-5/6 flex-col items-center justify-center border border-sky-500 p-4 ">
-          {peerList.map((user) => (
-            <div key={user.id}>{user.id}</div>
-          ))}
-          <Chat
-            userId={userId}
-            appId={applicationSettings.fbdb}
-            roomId={roomId}
-          />
-        </div>
-      </main>
+      <UserPreferencesProvider defaultStateOverride={userPreferences}>
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-950 to-slate-900">
+          <div className="container flex h-full w-5/6 flex-col items-center justify-center border border-sky-500 p-4">
+            <Chat
+              userId={userId}
+              appId={applicationSettings.fbdb}
+              roomId={roomId}
+            />
+          </div>
+        </main>
+      </UserPreferencesProvider>
     </ShellContextProvider>
   );
 };
