@@ -30,8 +30,8 @@ export const InputActions: React.FC = () => {
   // }, [isSuccess]);
 
   return (
-    <div className="flex flex-col gap-4  ">
-      <UIButton
+    <div className="flex w-34px flex-col  ">
+      {/* <UIButton
         title={"Submit Your Message"}
         action={() => onSubmit(debouncedText)}
         disabled={!debouncedText}
@@ -44,7 +44,7 @@ export const InputActions: React.FC = () => {
         disabled={!debouncedText}
       >
         <span>Emoji</span>
-      </UIButton>
+      </UIButton> */}
     </div>
   );
 };

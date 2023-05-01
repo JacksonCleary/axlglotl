@@ -2,9 +2,10 @@ import { useShellContext, useUserPreferences } from "~/providers";
 
 export const usePeerNameDisplay = () => {
   const { getUserSettings } = useUserPreferences();
-  const { peerList, customUsername: selfCustomUsername } = useShellContext();
+  const { peerList } = useShellContext();
 
-  const { userId: selfUserId } = getUserSettings();
+  const { userId: selfUserId, customUsername: selfCustomUsername } =
+    getUserSettings();
 
   const isPeerSelf = (userId: string) => selfUserId === userId;
 
@@ -13,34 +14,25 @@ export const usePeerNameDisplay = () => {
 
   const getCustomUsername = (userId: string) =>
     isPeerSelf(userId)
-      ? selfCustomUsername
+      ? selfCustomUsername ?? ""
       : getPeer(userId)?.customUsername ?? "";
 
   const getFriendlyName = (userId: string) => {
     const customUsername = getCustomUsername(userId);
-    const friendlyName = customUsername || userId;
-
+    const friendlyName = customUsername || userId.split("-")[0];
     return friendlyName;
   };
 
   const getDisplayUsername = (userId: string) => {
     const friendlyName = getFriendlyName(userId);
-    const customUsername = getCustomUsername(userId);
 
-    let displayUsername: string;
-
-    if (customUsername === friendlyName) {
-      displayUsername = `${friendlyName} (${userId})`;
-    } else {
-      displayUsername = userId;
-    }
-
-    return displayUsername;
+    return friendlyName;
   };
 
   return {
     getCustomUsername,
     isPeerSelf,
+    getPeer,
     getFriendlyName,
     getDisplayUsername,
   };

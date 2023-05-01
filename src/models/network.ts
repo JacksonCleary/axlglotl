@@ -4,4 +4,5 @@ export enum PeerActions {
   MESSAGE = "MESSAGE",
   MESSAGE_TRANSCRIPT = "MSG_XSCRIPT",
   PEER_METADATA = "PEER_META",
+  PEER_TYPE = "PEER_TYPE",
 }

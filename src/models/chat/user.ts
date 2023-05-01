@@ -1,10 +1,16 @@
 export type UserName = string;
 export type CustomUserName = string;
 export type UserID = string;
+export type UserStatusCode = "ready" | "busy" | "typing" | "away";
+export type UserStatusMessage = string;
 export type User = {
+  peerId: string;
   id: UserID;
   avatarID: Avatar;
   customUsername: CustomUserName;
+  userStatusCode?: UserStatusCode;
+  userStatusMessage?: UserStatusMessage;
+  typing?: boolean;
 };
 
 export type Avatar =
@@ -30,4 +36,5 @@ export interface UserSettings {
   playSoundOnNewMessage: boolean;
   showNotificationOnNewMessage: boolean;
   avatarID: Avatar;
+  typing: boolean;
 }

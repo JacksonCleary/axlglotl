@@ -13,9 +13,11 @@ import {
   type IncomingUntranslatedMessage,
   type OutgoingTranslatedMessage,
   type User,
+  type UserID,
   PeerActions,
   type AlertOptions,
   isMessageReceived,
+  type UserIsTyping,
 } from "~/models";
 import { usePeerNameDisplay } from "~/hooks";
 import {
@@ -26,6 +28,7 @@ import {
 } from "~/services";
 
 import { usePeerRoomAction } from "./usePeerRoomAction";
+import { Console } from "console";
 
 interface UseRoomConfig {
   roomId: string;
@@ -50,15 +53,20 @@ export function useRoom(
     showAlert,
     setRoomId,
     setPassword,
-    customUsername,
   } = useShellContext();
 
-  const userPreferences = useUserPreferences();
+  const { getUserSettings, updateUserSettings } = useUserPreferences();
+  const {
+    customUsername,
+    avatarID,
+    playSoundOnNewMessage,
+    showNotificationOnNewMessage,
+  } = getUserSettings();
   const settingsContext = useApplicationSettings();
   const [isMessageSending, setIsMessageSending] = useState(false);
   const [messageLog, _setMessageLog] = useState<Array<ReceivedMessage>>([]);
   const [newMessageAudio] = useState(() => new AudioService());
-  const { getDisplayUsername } = usePeerNameDisplay();
+  const { getDisplayUsername, getPeer } = usePeerNameDisplay();
 
   const messageTranscriptSizeLimit = settingsContext.messageTranscriptSizeLimit;
 
@@ -129,9 +137,14 @@ export function useRoom(
     if (isShowingMessages) setUnreadMessages(0);
   }, [isShowingMessages, setUnreadMessages]);
 
-  const [sendPeerMetadata, receivePeerMetadata] = usePeerRoomAction<User>(
+  const [sendPeerMetadata, receivePeerMetadata] = usePeerRoomAction<UserID>(
     peerRoom,
     PeerActions.PEER_METADATA
+  );
+
+  const [sendPeerTyping, receivePeerTyping] = usePeerRoomAction<boolean>(
+    peerRoom,
+    PeerActions.PEER_TYPE
   );
 
   const [sendMessageTranscript, receiveMessageTranscript] = usePeerRoomAction<
@@ -171,38 +184,26 @@ export function useRoom(
     setIsMessageSending(false);
   };
 
-  receivePeerMetadata(({ id, customUsername }, peerId: string) => {
+  receivePeerMetadata((id, peerId: string) => {
     console.log("RECEIVE PEER METADATA");
     console.log("peerId", peerId);
     const peerIndex = peerList.findIndex((peer) => peer.id === peerId);
     console.log("peerIndex", peerIndex);
-
+    console.log("avatarID", avatarID);
     if (peerIndex === -1) {
       console.log("ADD PEER TO PEERLIST");
       setPeerList([
         ...peerList,
         {
+          peerId,
           id,
-          customUsername,
+          customUsername: "",
           avatarID: getRandomUntakenAvatarBGId(peerList),
+          typing: false,
+          userStatusMessage: "",
+          userStatusCode: "ready",
         },
       ]);
-    } else {
-      const oldUsername = peerList[peerIndex]?.customUsername || id;
-      const newUsername = customUsername || id;
-
-      const newPeerList = [...peerList];
-      const newPeer: User = {
-        avatarID: newPeerList[peerIndex]?.avatarID,
-        id,
-        customUsername,
-      };
-      newPeerList[peerIndex] = newPeer;
-      setPeerList(newPeerList);
-
-      if (oldUsername !== newUsername) {
-        showAlert(`${oldUsername} is now ${newUsername}`);
-      }
     }
   });
 
@@ -212,20 +213,54 @@ export function useRoom(
     setMessageLog(transcript);
   });
 
-  receivePeerMessage((message) => {
-    const userSettings = userPreferences.getUserSettings();
+  const asyncSendPeerTyping = (typing: boolean) => {
+    void (async () => {
+      try {
+        const promises: Promise<any>[] = [sendPeerTyping(typing)];
 
+        // if (!isPrivate) {
+        // promises.push(
+        //   sendMessageTranscript(messageLog.filter(isMessageReceived), peerId)
+        // );
+        // }
+
+        await Promise.all(promises);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  };
+
+  receivePeerTyping((typing, peerId: string) => {
+    const peerIndex = peerList.findIndex((peer) => peer.peerId === peerId);
+    const peerExist = peerIndex !== -1;
+    if (peerExist) {
+      const cloneList = [...peerList];
+      const modifiedUserTyping = cloneList.map((peer) => {
+        if (peer.peerId === peerId) {
+          return {
+            ...peer,
+            typing: typing,
+          };
+        }
+        return peer;
+      });
+      setPeerList(modifiedUserTyping);
+    }
+  });
+
+  receivePeerMessage((message) => {
     if (!isShowingMessages) {
       setUnreadMessages(unreadMessages + 1);
     }
 
     if (!tabHasFocus || !isShowingMessages) {
-      if (userSettings.playSoundOnNewMessage) {
+      if (playSoundOnNewMessage) {
         // newMessageAudio.play();
       }
 
-      if (userSettings.showNotificationOnNewMessage) {
-        const displayUsername = getDisplayUsername(message?.user?.id);
+      if (showNotificationOnNewMessage) {
+        const displayUsername = getDisplayUsername(message?.userId);
 
         NotificationService.showNotification(
           `${displayUsername}: ${message.untranslatedMessage}`
@@ -239,16 +274,15 @@ export function useRoom(
   peerRoom.onPeerJoin(PeerHookType.NEW_PEER, (peerId: string) => {
     console.log("PEER ENTER");
     showAlert(`Someone has joined the room`, "success");
+
     void (async () => {
       try {
-        const promises: Promise<any>[] = [
-          sendPeerMetadata({ id: userId, customUsername }, peerId),
-        ];
+        const promises: Promise<any>[] = [sendPeerMetadata(userId, peerId)];
 
         // if (!isPrivate) {
-        promises.push(
-          sendMessageTranscript(messageLog.filter(isMessageReceived), peerId)
-        );
+        // promises.push(
+        //   sendMessageTranscript(messageLog.filter(isMessageReceived), peerId)
+        // );
         // }
 
         await Promise.all(promises);
@@ -282,8 +316,8 @@ export function useRoom(
   useEffect(() => {
     console.log("SEND PEER USEEFFECT");
     console.log("userId", userId);
-    () => sendPeerMetadata({ customUsername, id: userId });
-  }, [customUsername, userId, sendPeerMetadata]);
+    () => sendPeerMetadata(userId);
+  }, [customUsername, userId, sendPeerMetadata, avatarID]);
 
   return {
     isPrivate,
@@ -292,5 +326,6 @@ export function useRoom(
     peerRoom,
     roomContextValue,
     sendMessage,
+    asyncSendPeerTyping,
   };
 }

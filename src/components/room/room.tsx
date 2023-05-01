@@ -12,7 +12,8 @@ import {
   type ShellContextProps,
 } from "~/providers";
 import Chat from "../chat/chat";
-
+import { createToast } from "~/factories";
+import { Toaster } from "react-hot-toast";
 import { type AlertOptions, type User } from "~/models";
 import { useRouter } from "next/router";
 import { type UserSettings } from "~/models";
@@ -35,10 +36,8 @@ const Room: React.FC = () => {
   //   applicationSettings.getUserSettings().customUsername
   // );
   const [customUsername, setCustomUsername] = useState("");
-  const [isAlertShowing, setIsAlertShowing] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(defaultSidebarsOpen);
   const [isRoomShareDialogOpen, setIsRoomShareDialogOpen] = useState(false);
-  const [alertSeverity, setAlertSeverity] = useState<AlertOptions>("info");
   const [showAppBar, setShowAppBar] = useState(true);
   const [showRoomControls, setShowRoomControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -55,9 +54,7 @@ const Room: React.FC = () => {
   const showAlert = useCallback<
     (message: string, severity?: AlertOptions) => void
   >((message, severity) => {
-    setAlertText(message);
-    setAlertSeverity(severity ?? "info");
-    setIsAlertShowing(true);
+    createToast(message, severity);
   }, []);
 
   const shellContextValue: ShellContextProps = useMemo(
@@ -105,6 +102,7 @@ const Room: React.FC = () => {
     playSoundOnNewMessage: true,
     showNotificationOnNewMessage: true,
     avatarID: randomAvatarBG,
+    typing: false,
   });
 
   const userPreferences: UserPreferences = useMemo(
@@ -131,6 +129,7 @@ const Room: React.FC = () => {
       <UserPreferencesProvider defaultStateOverride={userPreferences}>
         <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-950 to-slate-900">
           <div className="container flex h-full w-5/6 flex-col items-center justify-center border border-sky-500 p-4">
+            <Toaster reverseOrder={false} gutter={8} />
             <Chat
               userId={userId}
               appId={applicationSettings.fbdb}

@@ -4,14 +4,16 @@ export interface ApplicationSettings {
   fbdb?: string;
   messageTranscriptSizeLimit: number;
   messageCharacterSizeLimit: number;
+  rtcConfig: RTCConfiguration;
 }
 
-const { messageTranscriptSizeLimit, messageCharacterSizeLimit } =
+const { messageTranscriptSizeLimit, messageCharacterSizeLimit, rtcConfig } =
   getSettingsConstants();
 
 export let _applicationSettings: ApplicationSettings = {
   messageTranscriptSizeLimit: messageTranscriptSizeLimit,
   messageCharacterSizeLimit: messageCharacterSizeLimit,
+  rtcConfig: rtcConfig,
 };
 
 const Context = createContext<ApplicationSettings>(_applicationSettings);

@@ -12,6 +12,7 @@ import {
 } from "~/providers";
 import { useRoom } from "~/hooks";
 import { v4 as uuid } from "uuid";
+import { Drawer } from "../drawer";
 
 interface ChatProps {
   appId: string;
@@ -28,7 +29,7 @@ const Chat: React.FC<ChatProps> = ({
 }) => {
   const { getUserSettings } = useUserPreferences();
 
-  const applicationSettings = useApplicationSettings();
+  const { rtcConfig } = useApplicationSettings();
   const shellContext = useShellContext();
 
   const { peerList } = shellContext;
@@ -39,10 +40,12 @@ const Chat: React.FC<ChatProps> = ({
     peerRoom,
     roomContextValue,
     sendMessage,
+    asyncSendPeerTyping,
   } = useRoom(
     {
       appId,
       // password,
+      rtcConfig,
     },
     {
       roomId,
@@ -91,13 +94,14 @@ const Chat: React.FC<ChatProps> = ({
       <div className="flex w-full flex-col gap-4">
         <div className="relative flex flex-row gap-4 ">
           <Window log={messageLog} />
+          <Drawer />
         </div>
-        {userId}
-        {peerList.map((user) => (
+        {/* {userId} */}
+        {/* {peerList.map((user) => (
           <div key={user.id}>{user.id}</div>
-        ))}
+        ))} */}
         <div className="flex flex-row gap-4  ">
-          <Input />
+          <Input sendTypingEvent={asyncSendPeerTyping} />
           <InputActions />
         </div>
       </div>

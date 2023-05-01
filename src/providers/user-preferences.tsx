@@ -21,6 +21,7 @@ export let _userPreferences: UserPreferences = {
     playSoundOnNewMessage: true,
     showNotificationOnNewMessage: true,
     avatarID: "hexagons",
+    typing: false,
   }),
 };
 
