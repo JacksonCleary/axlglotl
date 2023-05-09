@@ -24,6 +24,10 @@ export default {
         "1": "1",
         "5": "5",
       },
+      borderRadius: {
+        chat: "0 0.5rem 0.5rem 0.5rem",
+        chatButton: "0.25rem 0.25rem 0 0",
+      },
     },
   },
   plugins: [],

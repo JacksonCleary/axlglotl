@@ -1,0 +1,55 @@
+.editor-container {
+    background: #fff;
+    box-shadow: rgb(0 0 0 / 10%) 1px 1px 0px inset,
+      rgb(0 0 0 / 7%) 0px -1px 0px inset;
+    border-width: 1 1 1 6;
+  }
+  
+  .editor {
+    min-height: 90vh;
+    position: relative;
+    padding: 20px;
+  }
+
+  
+  .link {
+    position: relative;
+  }
+  
+  .link.edit-mode {
+    display: inline-block;
+  }
+
+  
+  .link-editor {
+    display: none;
+    background: white;
+    position: absolute;
+    margin-top: 4px;
+    min-width: 300px;
+    z-index: 1;
+  }
+  
+  .link-editor-btn {
+    margin-top: 16px;
+  }
+  
+
+  .toolbar {
+    border-bottom: 1px solid #ececec;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .toolbar-btn {
+    margin: 0 8px;
+  }
+  
+  .image-upload-input {
+    display: none;
+  }
+  
+  .block-style-dropdown {
+    display: inline-block;
+  }
+  

@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import {
-  ArrowUpTrayIcon,
-  ArrowDownTrayIcon,
-  Cog6ToothIcon,
-} from "@heroicons/react/24/solid";
+
+import { HiArrowUpTray, HiArrowDownTray, HiCog8Tooth } from "react-icons/hi2";
 import { DrawerContent } from "./";
 import { getAvatarBGFromId } from "~/utils";
 export const Drawer: React.FC = () => {
@@ -42,7 +39,7 @@ export const Drawer: React.FC = () => {
           {drawerOpen && (
             <div className={`flex items-center justify-center gap-2`}>
               <div className={`flex  py-1`}>
-                <Cog6ToothIcon
+                <HiCog8Tooth
                   className={`${buttonSizingW} ${buttonSizingH} fill-sky-50`}
                 />
               </div>
@@ -53,11 +50,11 @@ export const Drawer: React.FC = () => {
             className={` ${buttonSizingW} flex items-center justify-center gap-2 overflow-hidden ${buttonDirectionClass} border border-transparent p-2 transition-iconButton ease-in-out focus-within:border-sky-50  hover:border-sky-50`}
           >
             {drawerOpen ? (
-              <ArrowUpTrayIcon
+              <HiArrowUpTray
                 className={`${buttonIconSizing} rotate-90 fill-sky-50`}
               />
             ) : (
-              <ArrowDownTrayIcon
+              <HiArrowDownTray
                 className={`${buttonIconSizing} rotate-90 fill-sky-50`}
               />
             )}

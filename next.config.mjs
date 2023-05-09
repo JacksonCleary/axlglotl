@@ -9,6 +9,9 @@ const config = {
   // TODO
   reactStrictMode: false,
 
+  // global CSS issue for text editor
+  transpilePackages: ['verbum'],
+
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you
    * must comment the below `i18n` config out.

@@ -9,13 +9,16 @@ export const usePeerNameDisplay = () => {
 
   const isPeerSelf = (userId: string) => selfUserId === userId;
 
-  const getPeer = (userId: string) =>
+  const getPeerByUserId = (userId: string) =>
     peerList.find((peer) => peer.id === userId);
+
+  const getPeerByPeerId = (peerId: string) =>
+    peerList.find((peer) => peer.peerId === peerId);
 
   const getCustomUsername = (userId: string) =>
     isPeerSelf(userId)
       ? selfCustomUsername ?? ""
-      : getPeer(userId)?.customUsername ?? "";
+      : getPeerByUserId(userId)?.customUsername ?? "";
 
   const getFriendlyName = (userId: string) => {
     const customUsername = getCustomUsername(userId);
@@ -32,7 +35,8 @@ export const usePeerNameDisplay = () => {
   return {
     getCustomUsername,
     isPeerSelf,
-    getPeer,
+    getPeerByUserId,
+    getPeerByPeerId,
     getFriendlyName,
     getDisplayUsername,
   };

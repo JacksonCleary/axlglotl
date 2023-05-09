@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useShellContext, useUserPreferences } from "~/providers";
 import { User } from "../users";
-import { UserIcon, UserGroupIcon } from "@heroicons/react/24/solid";
+import { BiUser, BiGroup } from "react-icons/bi";
 import { User as UserModel } from "~/models";
 
 interface DrawerContentProps {
@@ -35,9 +35,7 @@ export const DrawerContent: React.FC<DrawerContentProps> = ({ drawerOpen }) => {
     <div className="mt-10 flex flex-1 flex-col justify-between overflow-hidden">
       <div className={"flex-1"}>
         <div className={"p-2"}>
-          <UserIcon
-            className={`${buttonSizingW} ${buttonSizingH} fill-sky-50`}
-          />
+          <BiUser className={`${buttonSizingW} ${buttonSizingH} fill-sky-50`} />
         </div>
         <div className={`flex justify-between rounded align-middle`}>
           <User
@@ -51,7 +49,7 @@ export const DrawerContent: React.FC<DrawerContentProps> = ({ drawerOpen }) => {
       </div>
       <div className={`h-2/5 ${peersWidth}`}>
         <div className={"p-2"}>
-          <UserGroupIcon
+          <BiGroup
             className={`${buttonSizingW} ${buttonSizingH} fill-sky-50`}
           />
         </div>

@@ -13,6 +13,7 @@ import {
 import { useRoom } from "~/hooks";
 import { v4 as uuid } from "uuid";
 import { Drawer } from "../drawer";
+import { useDebounce } from "use-debounce";
 
 interface ChatProps {
   appId: string;
@@ -56,11 +57,15 @@ const Chat: React.FC<ChatProps> = ({
 
   // messaging settings
   const [text, setText] = useState<string>("");
+  const resetInput = useCallback(() => {
+    setText("");
+  }, []);
   const onSubmit = useCallback<(message: string) => Promise<void>>(
     async (message: string) => {
       await sendMessage(message);
+      resetInput();
     },
-    [sendMessage]
+    [sendMessage, resetInput]
   );
   //TODO
   const onEmoji = useCallback(async () => {
@@ -71,12 +76,10 @@ const Chat: React.FC<ChatProps> = ({
     });
     return myPromise;
   }, []);
-  const resetInput = useCallback(() => {
-    setText("");
-  }, []);
+
   const textContext: MessagingContextProps = useMemo(
     () => ({
-      text,
+      text: text,
       setText,
       onSubmit,
       onEmoji,
@@ -84,7 +87,7 @@ const Chat: React.FC<ChatProps> = ({
     }),
     [text, setText, onSubmit, onEmoji, resetInput]
   );
-  console.log("update");
+
   useEffect(() => {
     console.log("shellContext.peerList", shellContext.peerList);
   }, [shellContext.peerList]);
@@ -96,11 +99,8 @@ const Chat: React.FC<ChatProps> = ({
           <Window log={messageLog} />
           <Drawer />
         </div>
-        {/* {userId} */}
-        {/* {peerList.map((user) => (
-          <div key={user.id}>{user.id}</div>
-        ))} */}
-        <div className="flex flex-row gap-4  ">
+
+        <div className="flex flex-col gap-2  ">
           <Input sendTypingEvent={asyncSendPeerTyping} />
           <InputActions />
         </div>
